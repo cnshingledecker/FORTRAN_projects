@@ -17,6 +17,7 @@ PROGRAM test_bh80
   INTEGER            :: iters,n
   INTEGER            :: ssize
   INTEGER, DIMENSION(:),ALLOCATABLE :: seed
+  DOUBLE PRECISION :: sn,snels,sigmaEl
 
   CALL RANDOM_SEED(SIZE=ssize)
   ALLOCATE(seed(ssize))
@@ -37,7 +38,12 @@ PROGRAM test_bh80
   energy = energy - tth
 !  PRINT *, 'T=',tth,'eV and E=',energy,'eV'
 !  PRINT *, "T=",tth,'eV and theta=',labTheta*57.2957795,"deg"
-  PRINT *, 'e=',els,' and b=',br,' and s2=',s2
+!  PRINT *, 'e=',els,' and b=',br,' and s2=',s2
+  
+  snels = sneps(els)
+  sn    = sne(snels,z1,z2,m1,m2)
+  sigmaEl = selast(energy,sn,mf)
+  PRINT *, 'Sn(E)=',sn,'sn(eps)=',snels,'sigma_el=',sigmaEl
   END DO
 
 END PROGRAM test_bh80

@@ -8,7 +8,7 @@ MODULE bh80
   REAL, PARAMETER :: PI=3.14159
   REAL, PARAMETER :: M1=1 !Ion mass in amu 
   REAL, PARAMETER :: M2=16 !Target mass in amu
-  REAL, PARAMETER :: A0=0.579 !Bohr radius in Angstroms 
+  REAL, PARAMETER :: A0=0.529177 !Bohr radius in Angstroms 
   REAL, PARAMETER :: ECHARG2 = 14.39 !Square of the electron charge in eV*Angstroms 
 
   CONTAINS
@@ -94,8 +94,8 @@ MODULE bh80
       REAL, INTENT(IN) :: z1,z2
       REAL             :: au
 
-      au = (0.8853*A0)/((z1**(2./3.)) + (z2**(2./3.)))
-!      PRINT *, 'The screening length is',au
+      au = (0.8853*A0)/(z1**0.23 + z2**0.23)
+      PRINT *, 'The screening length is',au,'Angstroms'
       RETURN
     END FUNCTION au
 
@@ -113,10 +113,11 @@ MODULE bh80
       !Data dictionary: Local variables
       DOUBLE PRECISION             :: fac1,fac2,fac3
 
-      fac1 = (au/ECHARG2)
-      fac2 = (m2/(m1+m2))
-      fac3 = (1./(z1+z2))
+      fac1 = au/ECHARG2
+      fac2 = m2/(m1+m2)
+      fac3 = 1./(z1+z2)
       eps = en*fac1*fac2*fac3 
+      PRINT *, 'The center of mass energy is',en*fac2
       PRINT *, 'The reduced energy is',eps
     END FUNCTION eps
 
@@ -186,11 +187,11 @@ MODULE bh80
     RETURN
   END FUNCTION sneps
 
-  FUNCTION sne(eps,sneps,z1,z2,m1,m2)
+  FUNCTION sne(sneps,z1,z2,m1,m2)
     IMPLICIT NONE
 
     !Data dicionary: Calling parameters
-    DOUBLE PRECISION, INTENT(IN) :: eps,sneps
+    DOUBLE PRECISION, INTENT(IN) :: sneps
     REAL            , INTENT(IN) :: z1,z2
     REAL            , INTENT(IN) :: m1,m2
     DOUBLE PRECISION             :: sne
