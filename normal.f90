@@ -1,5 +1,4 @@
 function c4_normal_01 ( seed )
-
 !*****************************************************************************80
 !
 !! C4_NORMAL_01 returns a unit pseudonormal C4.
@@ -194,7 +193,7 @@ function i8_normal_ab ( a, b, seed )
   real ( kind = 8 ) r2
   real ( kind = 8 ), parameter :: r8_pi = 3.141592653589793D+00
   real ( kind = 8 ) r8_uniform_01
-  integer ( kind = 8 ) seed
+  integer ( kind = 4 ) seed
   real ( kind = 8 ) x
 
   r1 = r8_uniform_01 ( seed )
