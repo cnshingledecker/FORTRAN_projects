@@ -6,6 +6,8 @@ MODULE pjg76
                                                      0.11,0.16,0.1 /)
   REAL(KIND=8), PARAMETER, DIMENSION(7) :: IJVALS=(/ 12.1,16.1,16.9,18.2, &
                                                      20.3,23.0,37.0 /)
+  REAL(KIND=8), PARAMETER, DIMENSION(7) :: CJVALS=(/ 1.93,2.56,2.69,2.90, &
+                                                     3.23,3.66,5.89 /)
   REAL(KIND=8), PAREMETER               :: B0=0.030
   REAL(KIND=8), PARAMETER               :: B1=1.035
   REAL(KIND=8), PARAMETER               :: E0=8239 !eV
@@ -107,5 +109,41 @@ FUNCTION gamfac(energy)
   gamfac = GS + (num/den)
   RETURN
 END FUNCTION gamfac
+
+FUNCTION spr(pr_en,se_en,fj,gamfac)
+  IMPLICIT NONE
+
+  ! Data dictionary: Calling parameters
+  REAL(KIND=8), INTENT(IN) :: pr_en !proton energy in eV
+  REAL(KIND=8), INTENT(IN) :: se_en !secondary electron energy in eV
+  REAL(KIND=8), INTENT(IN), DIMENSION(7) :: fj
+  REAL(KIND=8), INTENT(IN)               :: gamfac
+  REAL(KIND=8)             :: spr
+
+  ! Data dictionary: Local variables
+  REAL(KIND=8)             :: prefacnum,prefacden
+  REAL(KIND=8)             :: prefac
+  REAL(KIND=8)             :: fac1prefac,fac1insidesnum,fac1insidesden
+  REAL(KIND=8)             :: fac1insides,part1_1
+  REAL(KIND=8)             :: bfac
+  REAL(KIND=8)             :: prenerg,seenerg
+  REAL(KIND=8)             :: fac2p1,fac2p2
+  INTEGER                  :: n
+
+  bfac = beta(pr_en)
+
+  DO n=1,7
+    prefacnum = fj(n)
+    prefacden = 0.5*MP*(bfac*bfac)*(CVAC*CVAC)
+    prefac = prefacnum/prefacden
+
+    fac1prefac = K*gamfac*gamfac
+
+    fac1insidesnum = 4*MP*(bfac*bfac)*(CVAC*CVAC)*cj(n)
+    fac1insidesden = 2*IJ(n)*(1-(bfac*bfac))
+    fac1insides = fac1insidesnum/fac1insidesden
+  END DO
+
+END FUNCTION spr
 
 END MODULE pjg76
