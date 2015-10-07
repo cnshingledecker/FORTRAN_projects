@@ -1,6 +1,8 @@
 MODULE mc_toolbox
 
   INTEGER(KIND=4), PARAMETER :: GSEED=12345
+  REAL(KIND=8), PARAMETER :: MEANVAL=0.00
+  REAL(KIND=8), PARAMETER :: SDEV=2.00
 
   CONTAINS
     FUNCTION rgamma(a)
@@ -22,18 +24,18 @@ MODULE mc_toolbox
       DO 
         v = 0.
         DO WHILE ( v .LE. 0. )
-          x = R8_NORMAL_01(GSEED) 
+          x = R8_NORMAL_AB(MEANVAL,SDEV) 
           v = 1. + c*x
         END DO
 !        PRINT *, 'x=',x,'and v=',v
         v = v*v*v
         u = RAND() 
         IF ( u .LT. 1.-0.331*(x*x)*(x*x) ) THEN
-          PRINT *, 'Success-1!'
+!          PRINT *, 'Success-1!'
           rgamma = (d*v)
           GOTO 10 
         ELSE IF ( DLOG(u) .LT. 0.5*x*x+d*(1.-v+DLOG(v)) ) THEN
-          PRINT *, 'Success-2!'
+!          PRINT *, 'Success-2!'
           rgamma = (d*v)
           GOTO 10
         END IF
@@ -189,6 +191,58 @@ FUNCTION r8_uniform_01 ( seedy )
   PRINT *, 'The uniform RN is:',r8_uniform_01
   return
 END FUNCTION r8_uniform_01
+
+FUNCTION r8_normal_ab ( a, b)
+!*****************************************************************************80
+!
+!! R8_NORMAL_AB returns a scaled pseudonormal R8.
+!
+!  Discussion:
+!
+!    The normal probability distribution function (PDF) is sampled,
+!    with mean A and standard deviation B.
+!
+!  Licensing:
+!
+!    This code is distributed under the GNU LGPL license.
+!
+!  Modified:
+!
+!    06 August 2013
+!
+!  Author:
+!
+!    John Burkardt
+!
+!  Parameters:
+!
+!    Input, real ( kind = 8 ) A, the mean of the PDF.
+!
+!    Input, real ( kind = 8 ) B, the standard deviation of the PDF.
+!
+!    Input/output, integer ( kind = 4 ) SEED, a seed for the random
+!    number generator.
+!
+!    Output, real ( kind = 8 ) R8_NORMAL_AB, a sample of the normal PDF.
+!
+  implicit none
+
+  real ( kind = 8 ) a
+  real ( kind = 8 ) b
+  real ( kind = 8 ) r1
+  real ( kind = 8 ) r2
+  real ( kind = 8 ) r8_normal_ab
+  real ( kind = 8 ), parameter :: r8_pi = 3.141592653589793D+00
+  real ( kind = 8 ) x
+
+  r1 = RAND()
+  r2 = RAND()
+  x = sqrt ( - 2.0D+00 * log ( r1 ) ) * cos ( 2.0D+00 * r8_pi * r2 )
+
+  r8_normal_ab = a + b * x
+
+  return
+END FUNCTION r8_normal_ab
 
 END MODULE mc_toolbox
 

@@ -1,0 +1,6 @@
+PROGRAM typeparam
+  USE type
+  IMPLICIT NONE
+  
+  PRINT *, t
+END PROGRAM
